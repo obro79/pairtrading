@@ -26,5 +26,7 @@ def create_chart(asset_1_data, asset_2_data, asset_1_name, asset_2_name):
     return fig
 
 
+#TODO z-score
+
 if __name__ == "__main__":
     get_data("AAPL", "MSFT","1y")
