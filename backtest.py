@@ -3,6 +3,7 @@ class Backtest:
         self.transaction_cost = transaction_cost
         self.asset_a_data = asset_a_data
         self.asset_b_data = asset_b_data
+        self.backtest()
 
     @property
     def transaction_cost(self):
@@ -32,7 +33,16 @@ class Backtest:
         pass
 
     def backtest_metrics(self):
-        pass
+        return {
+            "max_drawdown": self.max_drawdown(),
+            "annual_return": self.annual_return(),
+            "annual_volatility": self.annual_volatility(),
+            "calmar_ratio": self.calmar_ratio(),
+            "sharpe_ratio": self.sharpe_ratio(),
+            "sortino_ratio": self.sortino_ratio(),
+            "alpha": self.alpha(),
+            "beta": self.beta()
+        }
 
     def plot_results(self):
         pass
@@ -54,10 +64,6 @@ class Backtest:
 
     def calmar_ratio(self):
         pass
-
-    def max_drawdown(self):
-        pass
-
 
     def alpha(self):
         pass

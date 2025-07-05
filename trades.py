@@ -1,4 +1,4 @@
-class Tradess:
+class Trades:
     def __init__(self):
         self.trades = []
 
