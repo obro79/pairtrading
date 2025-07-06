@@ -2,8 +2,6 @@ import yfinance as yf
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 
-
-
 class Data():
     def __init__(self, asset_1, asset_2, date_range):
         self.asset_1 = asset_1
@@ -26,7 +24,6 @@ class Data():
     @asset_2.setter
     def asset_2(self, value):
         self.asset_2 = value
-
 
     @property
     def date_range(self):

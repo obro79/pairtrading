@@ -5,6 +5,7 @@ class Trades:
     def add_trade(self, trade):
         self.trades.append(trade)
 
-    def get_trades(self):
-        return self.trades
 
+    @property
+    def trades(self):
+        return self.trades
