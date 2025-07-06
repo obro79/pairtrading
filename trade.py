@@ -1,3 +1,5 @@
+"""Trade class that stores trade information."""
+
 class Trade:
     def __init__(self, date, asset, price, quantity, commission):
         self.date = date

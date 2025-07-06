@@ -1,3 +1,5 @@
+"""Backtest class that runs the trading strategy on historical data."""
+
 class Backtest:
     def __init__(self, asset_a_data, asset_b_data, transaction_cost=0.01):
         self.transaction_cost = transaction_cost

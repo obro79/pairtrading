@@ -1,3 +1,5 @@
+"""Stores the frontend of the app."""
+
 import streamlit as st
 from data import *
 import matplotlib.pyplot as plt
