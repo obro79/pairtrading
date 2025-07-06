@@ -1,15 +1,24 @@
 """Strategy class that defines the trading strategy."""
 
+import numpy as np
+import statsmodels.api as sm
+from statsmodels.tsa.stattools import coint
+
 from data import Data
 
+
 class Strategy():
-    def __init__(self, asset_a, asset_b, look_back_window=60,entry_threshold=2,exit_threshold=2):
+    def __init__(self, asset_a, asset_b, look_back_window=60, entry_threshold=2, exit_threshold=2, corr_threshold=0.90,
+                 coint_p=0.05, max_half_life=20):
         self.asset_a = asset_a
         self.asset_b = asset_b
         self.look_back_window = look_back_window
         self.data = Data(self.asset_a, self.asset_b, self.look_back_window)
         self.entry_threshold = entry_threshold
         self.exit_threshold = exit_threshold
+        self.corr_threshold = corr_threshold
+        self.coint_p = coint_p
+        self.max_half_life = max_half_life
 
     @property
     def asset_a(self):
@@ -43,26 +52,58 @@ class Strategy():
         """
         asset_a_data = self.data.asset_1_data
         asset_b_data = self.data.asset_2_data
-        is_cointegrated  = self.engle_granger_test(asset_1_data,asset_2_data)
-        statistically_significant = self.p_value()
-        correlation = self.correlation()
-        return is_cointegrated and statistically_significant and correlation
+        asset_a_data, asset_b_data = self._merge_closes(asset_a_data, asset_b_data)
+        is_cointegrated = self._is_cointegrated(asset_a_data, asset_b_data)
+        is_stably_correlated = self._is_stably_correlated(asset_a_data, asset_b_data)
+        has_short_half_life = self._has_short_half_life(asset_a_data, asset_b_data)
+        return is_cointegrated and is_stably_correlated and has_short_half_life
 
-    def engle_granger_test(self, asset_1_data, asset_2_data):
+    def _is_cointegrated(self, asset_1_data, asset_2_data):
         """
         Summary: Return True if the two series are cointegrated.
         Args:  asset_1_data: pd of asset 1 data, asset_2_data: pd of asset 2 data
         Returns: boolean
         """
-        pass
+        score, p_value, crit_vals = coint(asset_1_data, asset_2_data)
+        cv_5pct = crit_vals[1]
+        return score < cv_5pct and p_value < self.coint_p
 
-    def p_value(self, asset_1_data, asset_2_data):
-        pass
-
-    def correlation(self, asset_1_data, asset_2_data):
+    def _is_stably_correlated(self, asset_1_data, asset_2_data):
         """
         Summary: Return the correlation between the two series.
         Args: asset_1_data: pd of asset 1 data, asset_2_data: pd of asset 2 data
         Returns: the correlation between the two series.
         """
-        pass
+        rolling = asset_1_data.rolling(self.look_back_window).corr(asset_2_data)
+        stable_corr = rolling.min()
+        return stable_corr.mean() > self.corr_threshold
+
+    def _has_short_half_life(self, asset_1_data, asset_2_data):
+        """
+        Summary: returns true if the deviation from the long term mean reverts to half under the max_half_life.
+        Args: asset_1_data: pd of asset 1 data, asset_2_data: pd of asset 2 data
+        Returns: boolean
+        """
+        spread = asset_1_data - asset_2_data
+        lagged = spread.shift(1).fillna(method='bfill')
+        delta = spread - lagged
+        phi = sm.OLS(delta, sm.add_constant(lagged)).fit().params[1]
+        if phi <= 0 or phi >= 1:
+            return False
+        half_life = -np.log(2) / np.log(phi)
+        return half_life <= self.max_half_life
+
+    def _merge_closes(self, asset_1_data, asset_2_data):
+        """
+        Summary: Merges the two dataframes on the Close column ensures the two series are aligned.
+        Args: asset_1_data: pd of asset 1 data, asset_2_data: pd of asset 2 data
+        Returns: asset_1_data, asset_2_data: pd of asset 1 data, asset 2 data, aligned on Close.
+        """
+
+        df = (
+            asset_1_data['Close'].rename('A')
+            .to_frame()
+            .join(asset_2_data['Close'].rename('B'), how='inner')
+            .dropna()
+        )
+        return df['A'], df['B']
