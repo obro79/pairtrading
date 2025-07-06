@@ -42,7 +42,21 @@ class Strategy():
         Args: self
         Returns: action: int
         """
-        pass
+        A, B = self._merge_closes(self.data.asset_1_data,
+                                  self.data.asset_2_data)
+        spread = A - B
+        mu = spread.mean()
+        sigma = spread.std(ddof=0)
+        z = (spread.iloc[-1] - mu) / sigma
+
+        if z >= self.entry_threshold:
+            return -1
+        elif z <= -self.exit_threshold:
+            return 1
+        elif abs(z) < self.exit_threshold:
+            return 0
+        else:
+            return None
 
     def valid_pair(self):
         """
