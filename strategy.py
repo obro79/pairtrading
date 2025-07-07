@@ -58,6 +58,17 @@ class Strategy():
         else:
             return None
 
+    def execute_trade(self, action):
+        """
+        Summary: Executes a trade on the portfolio given the action
+        Args: action: int
+        Returns: void
+        """
+        if action == -1:
+            pass
+        elif action == 1:
+            pass
+
     def valid_pair(self):
         """
         Summary: Check if the pair of tickers will make be valid for pair trading.

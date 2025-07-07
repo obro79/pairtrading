@@ -1,10 +1,12 @@
 """Backtest class that runs the trading strategy on historical data."""
 
+
 class Backtest:
-    def __init__(self, asset_a_data, asset_b_data, transaction_cost=0.01):
+    def __init__(self, asset_a_data, asset_b_data, transaction_cost=0.01, date_range="1y"):
         self.transaction_cost = transaction_cost
         self.asset_a_data = asset_a_data
         self.asset_b_data = asset_b_data
+        self.date_range = date_range
         self.backtest()
 
     @property
@@ -72,4 +74,3 @@ class Backtest:
 
     def beta(self):
         pass
-

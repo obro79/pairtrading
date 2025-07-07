@@ -2,6 +2,7 @@
 
 import plotly.graph_objects as go
 import yfinance as yf
+from numpy.f2py.auxfuncs import throw_error
 
 
 class Data():
@@ -68,3 +69,16 @@ class Data():
             go.Scatter(x=self.asset_2_data['Date'], y=self.asset_2_data['Close'], mode="lines", name=self.asset_2))
         fig.update_layout(xaxis_title="Time", yaxis_title="Price")
         return fig
+
+    def get_price_on_data(self, ticker, date):
+        """
+        Summary: returns the price of the given ticker on the given date.
+        Args: ticker: str, date: str
+        Returns: price: float
+        """
+        if ticker != self.asset_1 or ticker != self.asset_2:
+            throw_error("Ticker not in data")
+        elif ticker == self.asset_1:
+            return self.asset_1_data[self.asset_1_data['Date'] == date]['Close'].values[0]
+        else:
+            return self.asset_2_data[self.asset_2_data['Date'] == date]['Close'].values[0]
