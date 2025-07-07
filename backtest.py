@@ -1,12 +1,21 @@
 """Backtest class that runs the trading strategy on historical data."""
+from datetime import *
+
+from date_range import DateRange
+from portfolio import Portfolio
+from strategy import Strategy
 
 
 class Backtest:
-    def __init__(self, asset_a_data, asset_b_data, transaction_cost=0.01, date_range="1y"):
+    def __init__(self, asset_a_data, asset_b_data, transaction_cost=0.01, start_date='2020-01-01',
+                 end_date=datetime.now()):
         self.transaction_cost = transaction_cost
         self.asset_a_data = asset_a_data
         self.asset_b_data = asset_b_data
-        self.date_range = date_range
+        self.date_range = DateRange(start_date, end_date)
+        self.portfolio = Portfolio(initial_balance=100000, date_range=self.date_range)  ##
+        self.strategy = Strategy(asset_a=self.asset_a_data,
+                                 asset_b=self.asset_b_data)  ##TODO need access to ticker not data
         self.backtest()
 
     @property
@@ -34,7 +43,13 @@ class Backtest:
         self.asset_b_data = data
 
     def backtest(self):
-        pass
+        for date in self.date_range:
+            next_action = self.strategy.get_next_action()
+            if next_action == 0:
+                continue
+            elif next_action == 1:
+                makeTrade()
+        ##TODO
 
     def backtest_metrics(self):
         return {

@@ -91,6 +91,7 @@ class Strategy():
         """
         score, p_value, crit_vals = coint(asset_1_data, asset_2_data)
         cv_5pct = crit_vals[1]
+
         return score < cv_5pct and p_value < self.coint_p
 
     def _is_stably_correlated(self, asset_1_data, asset_2_data):

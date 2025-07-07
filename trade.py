@@ -45,5 +45,5 @@ class Trade:
     def commission(self):
         return self.commission
 
-    def make_trade(self):
+    def make_trade(self, action, ):
         pass
