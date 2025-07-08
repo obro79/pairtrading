@@ -2,7 +2,7 @@
 
 
 class Trade:
-    def __init__(self, date, asset, price, quantity, commission=0.001):
+    def __init__(self, date, asset, price, quantity, commission=CONSTANTS.COMMISION):
         self.date = date
         self.asset = asset
         self.price = price

@@ -4,12 +4,15 @@ import numpy as np
 import statsmodels.api as sm
 from statsmodels.tsa.stattools import coint
 
+import CONSTANTS
 from data import Data
 
 
 class Strategy():
-    def __init__(self, asset_a, asset_b, look_back_window=60, entry_threshold=2, exit_threshold=2, corr_threshold=0.90,
-                 coint_p=0.05, max_half_life=20):
+    def __init__(self, asset_a, asset_b, look_back_window=CONSTANTS.LOOK_BACK_WINDOW,
+                 entry_threshold=CONSTANTS.ENTRY_THRESHOLD, exit_threshold=CONSTANTS.EXIT_THRESHOLD,
+                 corr_threshold=CONSTANTS.CORR_THRESHOLD, coint_p=CONSTANTS.COINT_P,
+                 max_half_life=CONSTANTS.MAX_HALF_LIFE):
         self.asset_a = asset_a
         self.asset_b = asset_b
         self.look_back_window = look_back_window
