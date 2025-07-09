@@ -1,8 +1,9 @@
 """Trade class that stores trade information."""
+import CONSTANTS
 
 
 class Trade:
-    def __init__(self, date, asset, price, quantity, commission=CONSTANTS.COMMISION):
+    def __init__(self, date, asset: str, price: float, quantity: float, commission=CONSTANTS.COMMISSION) -> None:
         self.date = date
         self.asset = asset
         self.price = price
@@ -14,35 +15,35 @@ class Trade:
         return self._date
 
     @date.setter
-    def date(self, value):
+    def date(self, value) -> None:
         self._date = value
 
     @property
-    def asset(self):
+    def asset(self) -> str:
         return self._asset
 
     @asset.setter
-    def asset(self, value):
+    def asset(self, value) -> None:
         self._asset = value
 
     @property
-    def price(self):
+    def price(self) -> float:
         return self._price
 
     @price.setter
-    def price(self, value):
+    def price(self, value) -> None:
         self._price = value
 
     @property
-    def quantity(self):
+    def quantity(self) -> float:
         return self._quantity
 
     @quantity.setter
-    def quantity(self, value):
+    def quantity(self, value) -> None:
         self._quantity = value
 
     @property
-    def commission(self):
+    def commission(self) -> float:
         return self.commission
 
     def make_trade(self, action, ):

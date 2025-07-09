@@ -12,7 +12,7 @@ class DateRange:
     Provides common utilities: duration, containment, overlap.
     """
 
-    def __init__(self, start: DateLike, end: DateLike):
+    def __init__(self, start: DateLike, end: DateLike) -> None:
         self.start_date = self._to_datetime(start)
         self.end_date = self._to_datetime(end)
         if self.start_date > self.end_date:

@@ -1,12 +1,15 @@
 """Data class that fetches historical data from Yahoo Finance."""
 
+import pandas as pd
 import plotly.graph_objects as go
 import yfinance as yf
 from numpy.f2py.auxfuncs import throw_error
 
+from date_range import DateRange
+
 
 class Data():
-    def __init__(self, asset_1, asset_2, date_range):
+    def __init__(self, asset_1: str, asset_2: str, date_range: DateRange) -> None:
         self.asset_1 = asset_1
         self.asset_2 = asset_2
         self.date_range = date_range
@@ -14,38 +17,38 @@ class Data():
         self.asset_2_data = self.fetch_data(self.asset_2, self.date_range)
 
     @property
-    def asset_1(self):
+    def asset_1(self) -> str:
         return self.asset_1
 
     @asset_1.setter
-    def asset_1(self, value):
+    def asset_1(self, value: float) -> None:
         self.asset_1 = value
 
     @property
-    def asset_2(self):
+    def asset_2(self) -> pd.DataFrame:
         return self.asset_2
 
     @asset_2.setter
-    def asset_2(self, value):
+    def asset_2(self, value: float) -> None:
         self.asset_2 = value
 
     @property
-    def date_range(self):
+    def date_range(self) -> DateRange:
         return self.date_range
 
     @date_range.setter
-    def date_range(self, value):
+    def date_range(self, value: float) -> None:
         self.date_range = value
 
     @property
-    def asset_1_data(self):
+    def asset_1_data(self) -> pd.DataFrame:
         return self.asset_1_data
 
     @property
-    def asset_2_data(self):
+    def asset_2_data(self) -> pd.DataFrame:
         return self.asset_2_data
 
-    def fetch_data(self, asset, date_range):
+    def fetch_data(self, asset: str, date_range: DateRange) -> pd.DataFrame:
         """
         Summary: fetcher for historical data for the given asset and date range.
         Args: datarange: str, date range for the data to be fetched.
@@ -70,7 +73,7 @@ class Data():
         fig.update_layout(xaxis_title="Time", yaxis_title="Price")
         return fig
 
-    def get_price_on_data(self, ticker, date):
+    def get_price_on_data(self, ticker: str, date: DateRange) -> float:
         """
         Summary: returns the price of the given ticker on the given date.
         Args: ticker: str, date: str

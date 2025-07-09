@@ -1,18 +1,20 @@
 """Strategy class that defines the trading strategy."""
 
 import numpy as np
+import pandas as pd
 import statsmodels.api as sm
 from statsmodels.tsa.stattools import coint
 
 import CONSTANTS
+import actions
 from data import Data
 
 
 class Strategy():
-    def __init__(self, asset_a, asset_b, look_back_window=CONSTANTS.LOOK_BACK_WINDOW,
+    def __init__(self, asset_a: str, asset_b: str, look_back_window=CONSTANTS.LOOK_BACK_WINDOW,
                  entry_threshold=CONSTANTS.ENTRY_THRESHOLD, exit_threshold=CONSTANTS.EXIT_THRESHOLD,
                  corr_threshold=CONSTANTS.CORR_THRESHOLD, coint_p=CONSTANTS.COINT_P,
-                 max_half_life=CONSTANTS.MAX_HALF_LIFE):
+                 max_half_life=CONSTANTS.MAX_HALF_LIFE) -> None:
         self.asset_a = asset_a
         self.asset_b = asset_b
         self.look_back_window = look_back_window
@@ -24,19 +26,19 @@ class Strategy():
         self.max_half_life = max_half_life
 
     @property
-    def asset_a(self):
+    def asset_a(self) -> pd.DataFrame:
         return self._asset_a
 
     @asset_a.setter
-    def asset_a(self, value):
+    def asset_a(self, value: float) -> None:
         self._asset_a = value
 
     @property
-    def asset_b(self):
+    def asset_b(self) -> pd.DataFrame:
         return self._asset_b
 
     @asset_b.setter
-    def asset_b(self, value):
+    def asset_b(self, value: float) -> None:
         self._asset_b = value
 
     def get_next_action(self):
@@ -53,26 +55,15 @@ class Strategy():
         z = (spread.iloc[-1] - mu) / sigma
 
         if z >= self.entry_threshold:
-            return -1
+            return actions.LONG_B_SHORT_A
         elif z <= -self.exit_threshold:
-            return 1
+            return actions.LONG_A_SHORT_B
         elif abs(z) < self.exit_threshold:
-            return 0
+            return actions.HOLD
         else:
-            return None
+            return actions.EXIT  ## TODO only exit when in position/ reorder
 
-    def execute_trade(self, action):
-        """
-        Summary: Executes a trade on the portfolio given the action
-        Args: action: int
-        Returns: void
-        """
-        if action == -1:
-            pass
-        elif action == 1:
-            pass
-
-    def valid_pair(self):
+    def valid_pair(self) -> bool:
         """
         Summary: Check if the pair of tickers will make be valid for pair trading.
         Args: self
@@ -86,7 +77,7 @@ class Strategy():
         has_short_half_life = self._has_short_half_life(asset_a_data, asset_b_data)
         return is_cointegrated and is_stably_correlated and has_short_half_life
 
-    def _is_cointegrated(self, asset_1_data, asset_2_data):
+    def _is_cointegrated(self, asset_1_data, asset_2_data) -> bool:
         """
         Summary: Return True if the two series are cointegrated.
         Args:  asset_1_data: pd of asset 1 data, asset_2_data: pd of asset 2 data
@@ -97,7 +88,7 @@ class Strategy():
 
         return score < cv_5pct and p_value < self.coint_p
 
-    def _is_stably_correlated(self, asset_1_data, asset_2_data):
+    def _is_stably_correlated(self, asset_1_data, asset_2_data) -> bool:
         """
         Summary: Return the correlation between the two series.
         Args: asset_1_data: pd of asset 1 data, asset_2_data: pd of asset 2 data
@@ -107,7 +98,7 @@ class Strategy():
         stable_corr = rolling.min()
         return stable_corr.mean() > self.corr_threshold
 
-    def _has_short_half_life(self, asset_1_data, asset_2_data):
+    def _has_short_half_life(self, asset_1_data, asset_2_data) -> bool:
         """
         Summary: returns true if the deviation from the long term mean reverts to half under the max_half_life.
         Args: asset_1_data: pd of asset 1 data, asset_2_data: pd of asset 2 data
@@ -122,7 +113,7 @@ class Strategy():
         half_life = -np.log(2) / np.log(phi)
         return half_life <= self.max_half_life
 
-    def _merge_closes(self, asset_1_data, asset_2_data):
+    def _merge_closes(self, asset_1_data: pd.DataFrame, asset_2_data: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
         """
         Summary: Merges the two dataframes on the Close column ensures the two series are aligned.
         Args: asset_1_data: pd of asset 1 data, asset_2_data: pd of asset 2 data

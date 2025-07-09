@@ -1,6 +1,8 @@
 """Backtest class that runs the trading strategy on historical data."""
 from datetime import *
 
+import pandas as pd
+
 import CONSTANTS
 from date_range import DateRange
 from portfolio import Portfolio
@@ -8,8 +10,9 @@ from strategy import Strategy
 
 
 class Backtest:
-    def __init__(self, asset_a_data, asset_b_data, transaction_cost=CONSTANTS.COMMISION, start_date='2020-01-01',
-                 end_date=datetime.now()):
+    def __init__(self, asset_a_data: pd.DataFrame, asset_b_data: pd.DataFrame, transaction_cost=CONSTANTS.COMMISSION,
+                 start_date='2020-01-01',
+                 end_date=datetime.now()) -> None:
         self.transaction_cost = transaction_cost
         self.asset_a_data = asset_a_data
         self.asset_b_data = asset_b_data
@@ -20,27 +23,27 @@ class Backtest:
         self.backtest()
 
     @property
-    def transaction_cost(self):
+    def transaction_cost(self) -> float:
         return self.transaction_cost
 
     @transaction_cost.setter
-    def transaction_cost(self, value):
+    def transaction_cost(self, value: float) -> None:
         self.transaction_cost = value
 
     @property
-    def asset_a_data(self):
+    def asset_a_data(self) -> pd.DataFrame:
         return self.asset_a_data
 
     @asset_a_data.setter
-    def asset_a_data(self, data):
+    def asset_a_data(self, data: pd.DataFrame) -> None:
         self.asset_a_data = data
 
     @property
-    def asset_b_data(self):
+    def asset_b_data(self) -> pd.DataFrame:
         return self.asset_b_data
 
     @asset_b_data.setter
-    def asset_b_data(self, data):
+    def asset_b_data(self, data: pd.DataFrame) -> None:
         self.asset_b_data = data
 
     def backtest(self):
@@ -50,7 +53,6 @@ class Backtest:
                 continue
             elif next_action == 1:
                 makeTrade()
-        ##TODO
 
     def backtest_metrics(self):
         return {
