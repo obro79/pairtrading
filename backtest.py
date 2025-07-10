@@ -13,38 +13,29 @@ class Backtest:
     def __init__(self, asset_a_data: pd.DataFrame, asset_b_data: pd.DataFrame, transaction_cost=CONSTANTS.COMMISSION,
                  start_date='2020-01-01',
                  end_date=datetime.now()) -> None:
-        self.transaction_cost = transaction_cost
-        self.asset_a_data = asset_a_data
-        self.asset_b_data = asset_b_data
-        self.date_range = DateRange(start_date, end_date)
-        self.portfolio = Portfolio(initial_balance=CONSTANTS.STARTING_VALUE, date_range=self.date_range)  ##
-        self.strategy = Strategy(asset_a=self.asset_a_data,
-                                 asset_b=self.asset_b_data)  ##TODO need access to ticker not data
+
+        self._transaction_cost = transaction_cost
+        self._asset_a_data = asset_a_data
+        self._asset_b_data = asset_b_data
+        self._date_range = DateRange(start_date, end_date)
+        self._portfolio = Portfolio(initial_balance=CONSTANTS.STARTING_VALUE, date_range=self.date_range)  ##
+        self._strategy = Strategy(asset_a=self.asset_a_data,
+                                  asset_b=self.asset_b_data)  ##TODO need access to ticker not data
+
+        self._nav_history: Dict[datetime, float] = {}
         self.backtest()
 
     @property
     def transaction_cost(self) -> float:
-        return self.transaction_cost
-
-    @transaction_cost.setter
-    def transaction_cost(self, value: float) -> None:
-        self.transaction_cost = value
+        return self._transaction_cost
 
     @property
     def asset_a_data(self) -> pd.DataFrame:
-        return self.asset_a_data
-
-    @asset_a_data.setter
-    def asset_a_data(self, data: pd.DataFrame) -> None:
-        self.asset_a_data = data
+        return self._asset_a_data
 
     @property
     def asset_b_data(self) -> pd.DataFrame:
-        return self.asset_b_data
-
-    @asset_b_data.setter
-    def asset_b_data(self, data: pd.DataFrame) -> None:
-        self.asset_b_data = data
+        return self._asset_b_data
 
     def backtest(self):
         for date in self.date_range:

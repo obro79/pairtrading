@@ -4,11 +4,11 @@ import CONSTANTS
 
 class Trade:
     def __init__(self, date, asset: str, price: float, quantity: float, commission=CONSTANTS.COMMISSION) -> None:
-        self.date = date
-        self.asset = asset
-        self.price = price
-        self.quantity = quantity
-        self.commission = commission
+        self._date = date
+        self._asset = asset
+        self._price = price
+        self._quantity = quantity
+        self._commission = commission
 
     @property
     def date(self):
@@ -44,7 +44,7 @@ class Trade:
 
     @property
     def commission(self) -> float:
-        return self.commission
+        return self._commission
 
     def make_trade(self, action, ):
         pass

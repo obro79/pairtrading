@@ -10,43 +10,31 @@ from date_range import DateRange
 
 class Data():
     def __init__(self, asset_1: str, asset_2: str, date_range: DateRange) -> None:
-        self.asset_1 = asset_1
-        self.asset_2 = asset_2
-        self.date_range = date_range
-        self.asset_1_data = self.fetch_data(self.asset_1, self.date_range)
-        self.asset_2_data = self.fetch_data(self.asset_2, self.date_range)
+        self._asset_1 = asset_1
+        self._asset_2 = asset_2
+        self._date_range = date_range
+        self._asset_1_data = self.fetch_data(self.asset_1, self.date_range)
+        self._asset_2_data = self.fetch_data(self.asset_2, self.date_range)
 
     @property
     def asset_1(self) -> str:
-        return self.asset_1
-
-    @asset_1.setter
-    def asset_1(self, value: float) -> None:
-        self.asset_1 = value
+        return self._asset_1
 
     @property
-    def asset_2(self) -> pd.DataFrame:
-        return self.asset_2
-
-    @asset_2.setter
-    def asset_2(self, value: float) -> None:
-        self.asset_2 = value
+    def asset_2(self) -> str:
+        return self._asset_2
 
     @property
     def date_range(self) -> DateRange:
-        return self.date_range
-
-    @date_range.setter
-    def date_range(self, value: float) -> None:
-        self.date_range = value
+        return self._date_range
 
     @property
     def asset_1_data(self) -> pd.DataFrame:
-        return self.asset_1_data
+        return self._asset_1_data
 
     @property
     def asset_2_data(self) -> pd.DataFrame:
-        return self.asset_2_data
+        return self._asset_2_data
 
     def fetch_data(self, asset: str, date_range: DateRange) -> pd.DataFrame:
         """

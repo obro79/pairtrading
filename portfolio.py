@@ -9,23 +9,23 @@ from trades import Trades
 class Portfolio:
     def __init__(self, initial_balance: float, asset_a: pd.DataFrame, asset_b: pd.DataFrame,
                  date_range: DateRange) -> None:
-        self.total_value = initial_balance
-        self.current_cash = initial_balance
-        self.data = Data(asset_a, asset_b, date_range)
-        self.current_holdings = {}
-        self.trades = Trades()
+        self._total_value = initial_balance
+        self._current_cash = initial_balance
+        self._data = Data(asset_a, asset_b, date_range)
+        self._current_holdings = {}
+        self._trades = Trades()
 
     @property
     def total_value(self) -> float:
-        return self.current_cash + self.get_current_holdings_value()
+        return self._current_cash + self.get_current_holdings_value()
 
     @property
     def current_cash(self) -> float:
-        return self.current_cash
+        return self._current_cash
 
     @current_cash.setter
     def current_cash(self, cash: float) -> None:
-        self.current_cash = cash
+        self._current_cash = cash
 
     @property
     def current_holdings(self) -> list[str]:
@@ -34,7 +34,7 @@ class Portfolio:
     @current_holdings.setter
     def current_holdings(self, holdings: list[str]) -> None:
         for holding in holdings:
-            self.current_holdings[holding] = holdings[holding]
+            self._current_holdings[holding] = holdings[holding]
 
     def get_current_holdings_value(self) -> float:
         """
@@ -56,13 +56,13 @@ class Portfolio:
         Args: self, asset: str
         Returns: holding_value: float
         """
-        return self.data.get_price_on_data(asset, self.data.date_range) * self.current_holdings[asset]
+        return self._data.get_price_on_data(asset, self._data.date_range) * self._current_holdings[asset]
 
     def make_trade(self, asset_a: str, asset_b: str, action=0) -> None:
         if action == 1:
             pass
 
-            self.trades.add_trade(action, asset_a, asset_b)
+            self._trades.add_trade(action, asset_a, asset_b)
 
         elif action == -1:
             pass

@@ -4,11 +4,11 @@ from trade import Trade
 
 class Trades:
     def __init__(self) -> None:
-        self.trades = []
+        self._trades = []
 
     def add_trade(self, trade: Trade) -> None:
-        self.trades.append(trade)
+        self._trades.append(trade)
 
     @property
     def trades(self) -> list[Trade]:
-        return self.trades
+        return self._trades
