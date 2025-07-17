@@ -39,7 +39,7 @@ class Backtest:
 
     def backtest(self):
         for date in self.date_range:
-            next_action = self.strategy.get_next_action()
+            next_action = self.strategy.get_next_action(date)
             if next_action == 0:
                 continue
             elif next_action == 1:

@@ -1,5 +1,7 @@
 """Data class that fetches historical data from Yahoo Finance."""
 
+from dataclasses import dataclass, field
+
 import pandas as pd
 import plotly.graph_objects as go
 import yfinance as yf
@@ -8,33 +10,18 @@ from numpy.f2py.auxfuncs import throw_error
 from date_range import DateRange
 
 
-class Data():
-    def __init__(self, asset_1: str, asset_2: str, date_range: DateRange) -> None:
-        self._asset_1 = asset_1
-        self._asset_2 = asset_2
-        self._date_range = date_range
-        self._asset_1_data = self.fetch_data(self.asset_1, self.date_range)
-        self._asset_2_data = self.fetch_data(self.asset_2, self.date_range)
+@dataclass
+class Data:
+    asset_1: str
+    asset_2: str
+    date_range: DateRange
+    asset_1_data: pd.DataFrame = field(init=False)
+    asset_2_data: pd.DataFrame = field(init=False)
 
-    @property
-    def asset_1(self) -> str:
-        return self._asset_1
-
-    @property
-    def asset_2(self) -> str:
-        return self._asset_2
-
-    @property
-    def date_range(self) -> DateRange:
-        return self._date_range
-
-    @property
-    def asset_1_data(self) -> pd.DataFrame:
-        return self._asset_1_data
-
-    @property
-    def asset_2_data(self) -> pd.DataFrame:
-        return self._asset_2_data
+    def __post_init__(self):
+        # Fetch data for both assets after initialization
+        self.asset_1_data = self.fetch_data(self.asset_1, self.date_range)
+        self.asset_2_data = self.fetch_data(self.asset_2, self.date_range)
 
     def fetch_data(self, asset: str, date_range: DateRange) -> pd.DataFrame:
         """
@@ -61,7 +48,7 @@ class Data():
         fig.update_layout(xaxis_title="Time", yaxis_title="Price")
         return fig
 
-    def get_price_on_data(self, ticker: str, date: DateRange) -> float:
+    def get_price_on_date(self, ticker: str, date: DateRange) -> float:
         """
         Summary: returns the price of the given ticker on the given date.
         Args: ticker: str, date: str
